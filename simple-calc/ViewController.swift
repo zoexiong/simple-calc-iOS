@@ -27,32 +27,71 @@ class ViewController: UIViewController {
     var result : Double = 0
     var input: String = ""
     
+//need to add decimal support
+    // when user didn't enter number but pressed count, num appended to numbers will be 0.0
+    // need to add mod
+    // need to add RPN support
+    
     func getNumber(inputs: [String])->Double{
         
-        var numericalResult : Double = 0
-        let totalIndex: Int = inputs.count - 1
-        var power : Int
-        if totalIndex != 0 {//mutiple digits
-            var i = 0
+        var beforeDecimalResult : Double = 0
+        var afterDecimalResult : Double = 0
+        var beforeDecimalIndex: Int
+        var afterDecimalNumber: Int
+        var numericalResult: Double = 0
+        var power : Double
+        var i:Int = 0
+        
+        let decimalIndex = inputs.index(of: ".")
+        if decimalIndex == nil{
+            // index of digit right before decimal point
+            beforeDecimalIndex = inputs.count - 1
+            // number of digits after decimal point
+            afterDecimalNumber = -1
+        }
+        else {
+            beforeDecimalIndex = decimalIndex! - 1
+            afterDecimalNumber = inputs.count - 1 - decimalIndex!
+        }
+        
+        // get the value of digits before decimal point
+        if beforeDecimalIndex > 0 {//mutiple digits
+            i = 0
             power = 1
-            while i < totalIndex {
+            while i < beforeDecimalIndex { //        get the number of 0 following the first digit
                 power = power * 10
                 i = i + 1
             }
             i=0
-            while i <= totalIndex {
+            while i <= beforeDecimalIndex {
                 let digit: Int = Int(inputs[i])!
-                numericalResult = numericalResult + Double(power * digit)
+                beforeDecimalResult = beforeDecimalResult + power * Double(digit)
                 power = power / 10
                 i += 1
             }
-        }else{
-            numericalResult = Double(inputs[0])!
         }
+        else{
+            beforeDecimalResult = Double(inputs[0])!
+        }
+        
+        // get the value of digits after decimal point
+        if afterDecimalNumber > 0{
+            i = 0
+            power = 1
+            while i < afterDecimalNumber { //        get the number of 0 following the first digit
+                power = power / 10
+                i += 1
+                let indexDigit:Int = i + decimalIndex!
+                let digit: Int = Int(inputs[indexDigit])!
+                afterDecimalResult = afterDecimalResult + power * Double(digit)
+            }
+        }
+        else{
+            afterDecimalResult = 0}
+        
+        numericalResult = beforeDecimalResult + afterDecimalResult
         return numericalResult
     }
-    
-
 //the label used to show result
     @IBOutlet weak var resultText: UILabel!
 
@@ -113,6 +152,9 @@ class ViewController: UIViewController {
         inputText.text=String(text)
     }
     @IBAction func btnDot(_ sender: AnyObject) {
+        inputs.append(".")
+        let text = getNumber(inputs:inputs)
+        inputText.text=String(text)
            }
     @IBAction func btnAdd(_ sender: AnyObject) {
         let num :Double = getNumber(inputs: inputs)
@@ -154,12 +196,15 @@ class ViewController: UIViewController {
     @IBAction func btnCount(_ sender: AnyObject) {
         let num :Double = getNumber(inputs: inputs)
         op = "count"
-        numbers.append(num)
-        inputs = []
+        if inputs != []{
+            numbers.append(num)
+            inputs = []
+        }
     }
     @IBAction func btnClear(_ sender: AnyObject) {
         resultText.text=""
         inputs=[]
+        inputText.text=""
     }
     @IBAction func resultBtn(_ sender: AnyObject) {
         let num :Double? = getNumber(inputs: inputs)
