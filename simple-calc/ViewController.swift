@@ -27,7 +27,6 @@ class ViewController: UIViewController {
     var result : Double = 0
     var input: String = ""
     
-//need to add decimal support
     // when user didn't enter number but pressed count, num appended to numbers will be 0.0
     // need to add mod
     // need to add RPN support
@@ -70,8 +69,11 @@ class ViewController: UIViewController {
                 i += 1
             }
         }
-        else{
+        else if beforeDecimalIndex == 0{
             beforeDecimalResult = Double(inputs[0])!
+        }
+        else{
+        beforeDecimalResult = 0
         }
         
         // get the value of digits after decimal point
