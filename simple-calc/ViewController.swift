@@ -27,13 +27,16 @@ class ViewController: UIViewController {
     var op : String = ""
     var result : Double = 0
     var input: String = ""
-    var tempResult: Double = 0
+    var tempResult: Double? = nil
+    var temps: [Double] = []
     var index1: Int = -1
     var index2: Int = -1
     var num1: Double = 0
     var num2: Double = 0
     var history_left=""
     var history_list:[String]=[]
+    var displayText: String = ""
+    var tempOp: String = ""
     
     // when user didn't enter number but pressed count, num appended to numbers will be 0.0
     // need to add mod
@@ -107,13 +110,11 @@ class ViewController: UIViewController {
     
 
     
-    func getTempResult(op:String,numbers:[Double]) -> Double {
+    func getTempResult(op:String,temps:[Double]) -> Double {
         //for getTempResult()
         var result: Double = 0
-        index1 = numbers.count - 2
-        index2 = index1 + 1
-        num1 = numbers[index1]
-        num2 = numbers[index2]
+        num1 = temps[0]
+        num2 = temps[1]
         switch op{
         case "+":
             result = num1+num2
@@ -131,6 +132,59 @@ class ViewController: UIViewController {
       return result
     }
     
+    func getInputText(){
+        let text = getNumber(inputs:inputs)
+        if (op != "avg" && op != "count" && op != "fact"){
+            if numbers.count > 1{
+                displayText = String(tempResult!) + op + String(text)
+            }
+            else if numbers.count == 1 {
+                displayText = String(numbers[0]) + op + String(text)
+            } else {
+                displayText = String(text)
+            }
+        }else{
+            displayText = String(text)
+        }
+        inputText.text = displayText
+    }
+    
+            //in case user consecutively enter multiple operators to correct their mistaken input, added func to handle it
+    func opAction(tempOp:String){
+        if inputs != []{
+            let num :Double = getNumber(inputs: inputs)
+            numbers.append(num)
+            if op == "" {
+                op = tempOp
+            }
+            else{
+                op0 = op
+                op = tempOp
+            }
+            if op0 != "" {
+                if tempResult == nil{
+                    temps=numbers
+                } else{
+                    temps.append(tempResult!)
+                    temps.append(numbers[numbers.count-1])
+                }
+                tempResult = getTempResult(op: op0, temps: temps)
+                displayText = String(tempResult!)+op
+                history_left = history_left + String(num) + tempOp
+                displayText = String(tempResult!) + tempOp
+                temps=[]
+            }else{
+                history_left = String(num) + tempOp
+                displayText = String(num) + tempOp
+            }
+        }
+        else {
+            op=tempOp
+            displayText = String(displayText.characters.dropLast(1)) + op
+        }
+        inputText.text = displayText
+        inputs = []
+    }
 
 //the label used to show result
     @IBOutlet weak var resultText: UILabel!
@@ -141,180 +195,77 @@ class ViewController: UIViewController {
     
     @IBAction func btn1(_ sender: AnyObject) {
         inputs.append("1")
-        let text = getNumber(inputs:inputs)
-        if numbers.count > 1{
-        
-        }
-        if tempResult != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
     
     @IBAction func btn2(_ sender: AnyObject) {
         inputs.append("2")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
     
     @IBAction func btn3(_ sender: AnyObject) {
         inputs.append("3")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn4(_ sender: AnyObject) {
         inputs.append("4")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn5(_ sender: AnyObject) {
         inputs.append("5")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn6(_ sender: AnyObject) {
         inputs.append("6")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn7(_ sender: AnyObject) {
         inputs.append("7")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn8(_ sender: AnyObject) {
         inputs.append("8")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn9(_ sender: AnyObject) {
         inputs.append("9")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
+    
     @IBAction func btn0(_ sender: AnyObject) {
         inputs.append("0")
-        let text = getNumber(inputs:inputs)
-        if history_left != "" {
-            inputText.text=history_left+String(text)
-        } else {
-            inputText.text=String(text)
-        }
+        getInputText()
     }
     
     @IBAction func btnDot(_ sender: AnyObject) {
         inputs.append(".")
-        let text = getNumber(inputs:inputs)
-        inputText.text=String(text)
-           }
+        getInputText()
+    }
+    
     @IBAction func btnAdd(_ sender: AnyObject) {
-        //in case user consecutively enter multiple operators to correct their mistaken input
-        if inputs != []{
-        let num :Double = getNumber(inputs: inputs)
-        numbers.append(num)
-        if op0 == "" {
-        op0 = "+"
-        }
-        else{
-            if op == "" {
-                op = "+"
-            }
-            else{
-                op0 = op
-                op = "+"
-            }
-        }
-        if op != "" {
-        tempResult = getTempResult(op: op0, numbers: numbers)
-        inputText.text = String(tempResult)+op
-        history_left = history_left + String(num) + "+"
-        inputText.text=String(tempResult) + "+"
-        }else{
-        history_left=String(num)+"+"
-        inputText.text=String(num)+"+"
-        }
-        inputs = []
-        }
-        else {
-        op="+"
-        }
+        tempOp = "+"
+        opAction(tempOp:tempOp)
     }
-        
+    
     @IBAction func btnSubtract(_ sender: AnyObject) {
-        if inputs != []{
-        let num :Double = getNumber(inputs: inputs)
-        numbers.append(num)
-        if op0 == "" {
-            op0 = "-"
-        }
-        else{
-            if op == "" {
-                op = "-"
+        tempOp = "-"
+        opAction(tempOp:tempOp)
             }
-            else{
-                op0 = op
-                op = "-"
-            }
-        }
-        if op != "" {
-            tempResult = getTempResult(op: op0, numbers: numbers)
-            inputText.text = String(tempResult)+op
-            history_left = history_left + String(num) + "-"
-            inputText.text=String(tempResult) + "-"
-        }else{
-            history_left=String(num)+"-"
-            inputText.text=String(num)+"-"
-        }
-        inputs = []
-        }
-        else {
-            op="-"
-        }
-    }
+    
     @IBAction func btnMultiply(_ sender: AnyObject) {
-        let num :Double = getNumber(inputs: inputs)
-        op = "*"
-        numbers.append(num)
-        inputs = []
+        tempOp = "*"
+        opAction(tempOp:tempOp)
     }
+
     @IBAction func btnDivide(_ sender: AnyObject) {
-        let num :Double = getNumber(inputs: inputs)
-        op = "/"
-        numbers.append(num)
-        inputs = []
+        tempOp = "/"
+        opAction(tempOp:tempOp)
     }
     @IBAction func btnFact(_ sender: AnyObject) {
         let num :Double = getNumber(inputs: inputs)
@@ -339,8 +290,15 @@ class ViewController: UIViewController {
     }
     @IBAction func btnClear(_ sender: AnyObject) {
         resultText.text=""
-        inputs=[]
         inputText.text=""
+        displayText = ""
+        numbers = []
+        result = 0
+        inputs = []
+        history_left=""
+        tempResult = nil
+        op=""
+        op0=""
     }
     
     // when user didn't enter number but pressed count, num appended to numbers will be 0.0
@@ -349,29 +307,36 @@ class ViewController: UIViewController {
         let num :Double? = getNumber(inputs: inputs)
         if num != nil {
             numbers.append(num!)
+            //in case tempResult doesn't exist
+            if tempResult == nil{
+                if numbers.count > 1{
+            tempResult = numbers[0]
+                }else {
+                tempResult = 0
+                }
+            }
             switch op{
             case "+":
-                result = tempResult + num!
-                inputText.text=String(tempResult) + "+" + String(getNumber(inputs: inputs))
+                result = tempResult! + num!
+                inputText.text=String(tempResult!) + "+" + String(getNumber(inputs: inputs))
             case "-":
-                result = tempResult - num!
-                inputText.text=String(tempResult) + "-" + String(getNumber(inputs: inputs))
+                result = tempResult! - num!
+                inputText.text=String(tempResult!) + "-" + String(getNumber(inputs: inputs))
             case "*":
-                result = numbers.reduce(1,*)
+                result = tempResult! * num!
             case "/":
-                result = numbers[0]*numbers[0]/numbers.reduce(1,*)
+                result = tempResult! / num!
             case "%":
                 let num1 = numbers[0]
                 let num2 = numbers[1]
                 result = num1.truncatingRemainder(dividingBy: num2)
             case "fact":
-                var tempResult : Double = 1
+                result = 1
                 var num = numbers[0]
                 while num >= 1 {
-                    tempResult = tempResult * num
+                    result = result * num
                     num -= 1
                 }
-                result = tempResult
             case "avg":
                 let total : Double = numbers.reduce(0,+)
                 let count : Double = Double(numbers.count)
@@ -389,9 +354,13 @@ class ViewController: UIViewController {
         }
         
         numbers = []
+//        var historyResult: Double = result
         result = 0
         inputs = []
         history_left=""
+        tempResult = nil
+        op=""
+        op0=""
     }
 }
 
